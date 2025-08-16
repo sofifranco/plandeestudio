@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Malla Curricular – Ciencias de Datos (UBA)</title>
+  <!-- Fuente agradable -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #3b82f6; /* disponible */
+      --done: #10b981;   /* aprobado */
+      --locked: #c7cedb; /* bloqueado */
+      --cbc: #fde68a;
+      --y2: #bfdbfe;
+      --y3: #c7f9cc;
+      --y4: #fcdede;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height:1.4; 
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: saturate(120%) blur(6px);
+      background: linear-gradient(180deg, rgba(247,248,251,0.9), rgba(247,248,251,0.6));
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:16px 20px}
+    h1{font-size: clamp(20px, 3.5vw, 32px); margin:6px 0 2px; letter-spacing:-0.02em}
+    .subtitle{color:var(--muted); font-size:14px}
+
+    .toolbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:10px}
+    .btn{
+      border:0; border-radius:12px; padding:10px 14px; cursor:pointer; font-weight:600;
+      background:var(--text); color:white; box-shadow:var(--shadow); transition:transform .06s ease, opacity .2s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:#1118270d; color:var(--text); border:1px solid #e5e7eb}
+
+    .legend{display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-left:auto}
+    .pill{display:inline-flex; align-items:center; gap:8px; font-size:12px; padding:6px 10px; border-radius:999px; background:white; border:1px solid #e5e7eb}
+    .dot{width:10px; height:10px; border-radius:50%}
+
+    main{padding:24px 0 60px}
+
+    /* Columnas por año */
+    .grid{
+      display:grid; grid-template-columns: repeat(4, minmax(240px, 1fr)); gap:18px;
+    }
+    .column{
+      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+      display:flex; flex-direction:column; min-height:200px; overflow:hidden;
+    }
+    .col-header{padding:14px 16px; font-weight:700; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between}
+    .tag{font-size:12px; font-weight:700; letter-spacing:.02em; padding:4px 8px; border-radius:999px; border:1px solid #e5e7eb; background:#fff}
+
+    .list{display:grid; gap:10px; padding:14px}
+
+    /* Tarjeta de materia */
+    .course{
+      position:relative; padding:12px 12px; border-radius:14px; background:#fff; border:1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+      transition: box-shadow .2s ease, transform .06s ease, border-color .2s ease;
+      cursor:pointer; user-select:none;
+    }
+    .course:hover{box-shadow: 0 6px 16px rgba(15,23,42,0.08)}
+    .course:active{transform:translateY(1px)}
+    .course .name{font-weight:600}
+    .course .meta{font-size:12px; color:var(--muted); margin-top:2px}
+
+    /* Estados */
+    .course.available{border-color: rgba(59,130,246,.35);}
+    .course.available .state{background:var(--accent)}
+
+    .course.done{border-color: rgba(16,185,129,.35); opacity:1}
+    .course.done .state{background:var(--done)}
+
+    .course.locked{opacity:.6; cursor:not-allowed}
+    .course.locked .state{background:var(--locked)}
+
+    .state{position:absolute; right:10px; top:10px; width:12px; height:12px; border-radius:50%}
+
+    /* Tooltips bonitos */
+    .tooltip{ position:absolute; inset:auto auto 100% 0; transform:translateY(-8px); 
+      background:#111827; color:#fff; font-size:12px; padding:8px 10px; border-radius:10px; max-width:280px; box-shadow:var(--shadow); display:none; white-space:normal}
+    .tooltip::after{content:""; position:absolute; left:16px; bottom:-6px; border:6px solid transparent; border-top-color:#111827}
+    .course.show-tip .tooltip{display:block}
+
+    /* Responsive: scroll horizontal en pantallas chicas */
+    .scroll{overflow:auto}
+    .grid-wrap{min-width:980px}
+
+    /* Etiquetas de color por columna */
+    .cbc   {background:linear-gradient(180deg, #fff7d6, #fff);}
+    .y2    {background:linear-gradient(180deg, #eaf2ff, #fff);}
+    .y3    {background:linear-gradient(180deg, #eaffef, #fff);}
+    .y4    {background:linear-gradient(180deg, #fff0f0, #fff);}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Malla Curricular · Ciencias de Datos (UBA)</h1>
+      <div class="subtitle">Marca materias aprobadas, mira correlativas y guardá tu progreso automáticamente en este navegador.</div>
+      <div class="toolbar">
+        <button class="btn" id="resetBtn">Reiniciar progreso</button>
+        <button class="btn secondary" id="expandBtn">Expandir tooltips bloqueadas</button>
+        <div class="legend">
+          <span class="pill"><span class="dot" style="background:var(--done)"></span> Aprobada</span>
+          <span class="pill"><span class="dot" style="background:var(--accent)"></span> Disponible</span>
+          <span class="pill"><span class="dot" style="background:var(--locked)"></span> Bloqueada</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap scroll">
+    <div class="grid-wrap">
+      <div class="grid" id="columns">
+        <!-- Columnas generadas por JS -->
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ====== Datos de la malla ======
+    // IDs consistentes (usar estos para prerequisitos)
+    const IDS = {
+      // CBC (1°)
+      IPC: 'cbc_ipc', ICSE: 'cbc_icse', ANALISIS_CBC: 'cbc_analisis_matematico', ALGEBRA_CBC: 'cbc_algebra', QUIMICA: 'cbc_quimica', PENSAMIENTO: 'cbc_pensamiento',
+      // 2°
+      ALGEBRA1: 'y2_algebra1', ANALISIS1: 'y2_analisis1', AED1: 'y2_aed1', AED2: 'y2_aed2',
+      // 3°
+      ELECTIVA_NAT: 'y3_electiva_naturales', LAB_DATOS: 'y3_laboratorio_datos', ANALISIS2: 'y3_analisis2', ALC: 'y3_alc', ANALISIS_ADV: 'y3_analisis_avanzado',
+      // 4°
+      AED3: 'y4_aed3', PROB: 'y4_probabilidad', MODELO_CONT: 'y4_modelado_continuo', IOO: 'y4_investigacion_operativa', ESTAD_CD: 'y4_estadistica_ciencia_datos'
+    };
+
+    const CBC_ALL = [IDS.IPC, IDS.ICSE, IDS.ANALISIS_CBC, IDS.ALGEBRA_CBC, IDS.QUIMICA, IDS.PENSAMIENTO];
+
+    const COURSES = [
+      // CBC (1° AÑO)
+      { id: IDS.IPC,            name: 'IPC',                                   year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ICSE,           name: 'ICSE',                                  year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ANALISIS_CBC,   name: 'Análisis Matemático',                   year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ALGEBRA_CBC,    name: 'Álgebra',                               year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.QUIMICA,        name: 'Química',                               year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.PENSAMIENTO,    name: 'Pensamiento Computacional',             year: 'CBC (1° AÑO)', prereq: [] },
+
+      // 2° AÑO
+      { id: IDS.ALGEBRA1,       name: 'Álgebra I',                             year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.ANALISIS1,      name: 'Análisis I',                            year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.AED1,           name: 'Algoritmos y Estructuras de Datos I',   year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.AED2,           name: 'Algoritmos y Estructuras de Datos II',  year: '2° AÑO', prereq: [IDS.AED1] },
+
+      // 3° AÑO
+      { id: IDS.ELECTIVA_NAT,   name: 'Electiva de Naturales',                 year: '3° AÑO', prereq: CBC_ALL },
+      { id: IDS.LAB_DATOS,      name: 'Laboratorio de Datos',                  year: '3° AÑO', prereq: [IDS.AED1] },
+      { id: IDS.ANALISIS2,      name: 'Análisis II',                           year: '3° AÑO', prereq: [IDS.ANALISIS1] },
+      { id: IDS.ALC,            name: 'Álgebra Lineal Computacional',          year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.AED2] },
+      { id: IDS.ANALISIS_ADV,   name: 'Análisis Avanzado',                     year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.ANALISIS2] },
+
+      // 4° AÑO
+      { id: IDS.AED3,           name: 'Algoritmos y Estructuras de Datos III', year: '4° AÑO', prereq: [IDS.AED2] },
+      { id: IDS.PROB,           name: 'Probabilidad',                           year: '4° AÑO', prereq: [IDS.ANALISIS_ADV] },
+      { id: IDS.MODELO_CONT,    name: 'Introducción al Modelado Continuo',     year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV] },
+      { id: IDS.IOO,            name: 'Introducción a la Investigación Operativa y Optimización', year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV, IDS.AED3] },
+      { id: IDS.ESTAD_CD,       name: 'Introducción a la Estadística y Ciencia de Datos', year: '4° AÑO', prereq: [IDS.ALC, IDS.LAB_DATOS, IDS.PROB] },
+    ];
+
+    const STORAGE_KEY = 'uba-ds-malla-v1';
+
+    // ====== Estado ======
+    let completed = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+
+    // ====== Render ======
+    const columnsEl = document.getElementById('columns');
+
+    const years = ['CBC (1° AÑO)', '2° AÑO', '3° AÑO', '4° AÑO'];
+    const yearClass = {
+      'CBC (1° AÑO)': 'cbc', '2° AÑO': 'y2', '3° AÑO': 'y3', '4° AÑO': 'y4'
+    };
+
+    function render(){
+      columnsEl.innerHTML = '';
+      for(const y of years){
+        const col = document.createElement('section');
+        col.className = `column ${yearClass[y]}`;
+        col.innerHTML = `
+          <div class="col-header">
+            <div>${y}</div>
+            <span class="tag">${countDoneInYear(y)} / ${COURSES.filter(c=>c.year===y).length}</span>
+          </div>
+          <div class="list"></div>
+        `;
+        const list = col.querySelector('.list');
+        for(const c of COURSES.filter(c=>c.year===y)){
+          const {element, locked} = renderCourse(c);
+          list.appendChild(element);
+        }
+        columnsEl.appendChild(col);
+      }
+    }
+
+    function countDoneInYear(year){
+      return COURSES.filter(c=>c.year===year && completed.has(c.id)).length;
+    }
+
+    function prereqsMet(course){
+      return course.prereq.every(id => completed.has(id));
+    }
+
+    function missingOf(course){
+      return course.prereq.filter(id => !completed.has(id));
+    }
+
+    function courseById(id){
+      return COURSES.find(c=>c.id===id);
+    }
+
+    function statusFor(course){
+      if(completed.has(course.id)) return 'done';
+      return prereqsMet(course) ? 'available' : 'locked';
+    }
+
+    function renderCourse(course){
+      const el = document.createElement('div');
+      el.className = `course ${statusFor(course)}`;
+      el.dataset.id = course.id;
+
+      const state = document.createElement('span');
+      state.className = 'state';
+      el.appendChild(state);
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = course.name;
+      el.appendChild(name);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = course.prereq.length ? 'Correlativas: ' + course.prereq.map(id=>courseById(id)?.name || 'CBC').join(', ') : 'Sin correlativas';
+      el.appendChild(meta);
+
+      // tooltip dinámico para bloqueadas
+      const tip = document.createElement('div');
+      tip.className = 'tooltip';
+      el.appendChild(tip);
+
+      function updateTooltip(){
+        const missing = missingOf(course);
+        if(missing.length){
+          const list = missing.map(id => '• ' + (courseById(id)?.name || 'CBC')).join('\n');
+          tip.textContent = `Falta aprobar:\n${list}`;
+        } else {
+          tip.textContent = '';
+        }
+      }
+      updateTooltip();
+
+      // Interacción
+      el.addEventListener('click', (e)=>{
+        const st = statusFor(course);
+        if(st === 'locked'){
+          // Mostrar tooltip breve al hacer click
+          el.classList.add('show-tip');
+          setTimeout(()=>el.classList.remove('show-tip'), 1800);
+          return;
+        }
+        // Toggle aprobado
+        if(completed.has(course.id)) completed.delete(course.id); else completed.add(course.id);
+        persist();
+        rerenderAll();
+      });
+
+      // Mostrar tooltip al pasar el mouse si está bloqueada
+      el.addEventListener('mouseenter', ()=>{
+        if(statusFor(course)==='locked'){
+          updateTooltip();
+          el.classList.add('show-tip');
+        }
+      });
+      el.addEventListener('mouseleave', ()=> el.classList.remove('show-tip'));
+
+      return {element: el, locked: statusFor(course)==='locked'};
+    }
+
+    function persist(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(completed)));
+    }
+
+    function rerenderAll(){
+      render();
+    }
+
+    // ====== Controles ======
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      if(confirm('¿Reiniciar el progreso guardado?')){
+        completed = new Set();
+        persist();
+        rerenderAll();
+      }
+    });
+
+    let tipsExpanded = false;
+    document.getElementById('expandBtn').addEventListener('click', (e)=>{
+      tipsExpanded = !tipsExpanded;
+      e.currentTarget.textContent = tipsExpanded ? 'Ocultar tooltips' : 'Expandir tooltips bloqueadas';
+      // Añadir/quitar clase para mostrar tips en bloqueadas
+      document.querySelectorAll('.course').forEach(card=>{
+        if(card.classList.contains('locked')){
+          if(tipsExpanded) card.classList.add('show-tip'); else card.classList.remove('show-tip');
+        }
+      });
+    });
+
+    // ====== Inicializar ======
+    render();
+  </script>
+</body>
+</html>
