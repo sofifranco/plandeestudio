@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ciencias de Datos (UBA)</title>
-  <!-- Fuente agradable -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -12,9 +11,9 @@
       --card: #ffffff;
       --text: #1f2937;
       --muted: #6b7280;
-      --accent: #3b82f6; /* disponible */
-      --done: #10b981;   /* aprobado */
-      --locked: #c7cedb; /* bloqueado */
+      --accent: #3b82f6; 
+      --done: #10b981;
+      --locked: #c7cedb;
       --cbc: #fde68a;
       --y2: #bfdbfe;
       --y3: #c7f9cc;
@@ -23,10 +22,9 @@
       --radius: 16px;
     }
     *{box-sizing:border-box}
-    html, body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--text);
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       line-height:1.4; 
     }
     header{
@@ -53,59 +51,46 @@
 
     main{padding:24px 0 60px}
 
-    /* Columnas por año */
-    .grid{
-      display:grid; grid-template-columns: repeat(4, minmax(240px, 1fr)); gap:18px;
-    }
-    .column{
-      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
-      display:flex; flex-direction:column; min-height:200px; overflow:hidden;
-    }
+    .grid{display:grid; grid-template-columns: repeat(4, minmax(240px, 1fr)); gap:18px;}
+    .column{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); display:flex; flex-direction:column;}
     .col-header{padding:14px 16px; font-weight:700; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between}
-    .tag{font-size:12px; font-weight:700; letter-spacing:.02em; padding:4px 8px; border-radius:999px; border:1px solid #e5e7eb; background:#fff}
+    .tag{font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; border:1px solid #e5e7eb; background:#fff}
 
     .list{display:grid; gap:10px; padding:14px}
 
-    /* Tarjeta de materia */
     .course{
-      position:relative; padding:12px 12px; border-radius:14px; background:#fff; border:1px solid #e5e7eb;
+      position:relative; padding:12px; border-radius:14px; background:#fff; border:1px solid #e5e7eb;
       box-shadow: 0 2px 8px rgba(15,23,42,0.04);
-      transition: box-shadow .2s ease, transform .06s ease, border-color .2s ease, opacity .4s ease, filter .4s ease;
+      transition: all .4s ease;
       cursor:pointer; user-select:none;
     }
     .course:hover{box-shadow: 0 6px 16px rgba(15,23,42,0.08)}
     .course:active{transform:translateY(1px)}
-    .course .name{font-weight:600; transition: color .3s ease, text-decoration .3s ease, opacity .3s ease}
+    .course .name{font-weight:600; transition: all .3s ease}
     .course .meta{font-size:12px; color:var(--muted); margin-top:2px}
 
-    /* Estados */
-    .course.available{border-color: rgba(59,130,246,.35); filter: brightness(0.95); opacity:0.7; transition: opacity 0.6s ease, filter 0.6s ease;}
+    .course.available{border-color: rgba(59,130,246,.35); filter: brightness(0.95); opacity:0.6;}
     .course.available.active{filter:none; opacity:1;}
 
-    .course.done{border-color: rgba(16,185,129,.35); opacity:0.6; transition: opacity 0.4s ease;}
-    .course.done .name{text-decoration:line-through; opacity:0.7}
-    .course.done .state{background:var(--done)}
+    .course.done{border-color: rgba(16,185,129,.35); opacity:0.6;}
+    .course.done .name{text-decoration:line-through; opacity:0.6}
 
-    .course.locked{opacity:.5; cursor:not-allowed; filter: grayscale(0.4)}
-    .course.locked .state{background:var(--locked)}
+    .course.locked{opacity:.4; cursor:not-allowed; filter: grayscale(0.4)}
 
     .state{position:absolute; right:10px; top:10px; width:12px; height:12px; border-radius:50%}
 
-    /* Tooltips bonitos */
     .tooltip{ position:absolute; inset:auto auto 100% 0; transform:translateY(-8px); 
-      background:#111827; color:#fff; font-size:12px; padding:8px 10px; border-radius:10px; max-width:280px; box-shadow:var(--shadow); display:none; white-space:normal}
+      background:#111827; color:#fff; font-size:12px; padding:8px 10px; border-radius:10px; max-width:280px; box-shadow:var(--shadow); display:none}
     .tooltip::after{content:""; position:absolute; left:16px; bottom:-6px; border:6px solid transparent; border-top-color:#111827}
     .course.show-tip .tooltip{display:block}
 
-    /* Responsive: scroll horizontal en pantallas chicas */
     .scroll{overflow:auto}
     .grid-wrap{min-width:980px}
 
-    /* Etiquetas de color por columna */
-    .cbc   {background:linear-gradient(180deg, #fff7d6, #fff);}
-    .y2    {background:linear-gradient(180deg, #eaf2ff, #fff);}
-    .y3    {background:linear-gradient(180deg, #eaffef, #fff);}
-    .y4    {background:linear-gradient(180deg, #fff0f0, #fff);}
+    .cbc{background:linear-gradient(180deg, #fff7d6, #fff);}
+    .y2{background:linear-gradient(180deg, #eaf2ff, #fff);}
+    .y3{background:linear-gradient(180deg, #eaffef, #fff);}
+    .y4{background:linear-gradient(180deg, #fff0f0, #fff);}
   </style>
 </head>
 <body>
@@ -127,9 +112,7 @@
 
   <main class="wrap scroll">
     <div class="grid-wrap">
-      <div class="grid" id="columns">
-        <!-- Columnas generadas por JS -->
-      </div>
+      <div class="grid" id="columns"></div>
     </div>
   </main>
 
@@ -144,33 +127,29 @@
     const CBC_ALL = [IDS.IPC, IDS.ICSE, IDS.ANALISIS_CBC, IDS.ALGEBRA_CBC, IDS.QUIMICA, IDS.PENSAMIENTO];
 
     const COURSES = [
-      { id: IDS.IPC,            name: 'IPC',                                   year: 'CBC (1° AÑO)', prereq: [] },
-      { id: IDS.ICSE,           name: 'ICSE',                                  year: 'CBC (1° AÑO)', prereq: [] },
-      { id: IDS.ANALISIS_CBC,   name: 'Análisis Matemático',                   year: 'CBC (1° AÑO)', prereq: [] },
-      { id: IDS.ALGEBRA_CBC,    name: 'Álgebra',                               year: 'CBC (1° AÑO)', prereq: [] },
-      { id: IDS.QUIMICA,        name: 'Química',                               year: 'CBC (1° AÑO)', prereq: [] },
-      { id: IDS.PENSAMIENTO,    name: 'Pensamiento Computacional',             year: 'CBC (1° AÑO)', prereq: [] },
-
-      { id: IDS.ALGEBRA1,       name: 'Álgebra I',                             year: '2° AÑO', prereq: CBC_ALL },
-      { id: IDS.ANALISIS1,      name: 'Análisis I',                            year: '2° AÑO', prereq: CBC_ALL },
-      { id: IDS.AED1,           name: 'Algoritmos y Estructuras de Datos I',   year: '2° AÑO', prereq: CBC_ALL },
-      { id: IDS.AED2,           name: 'Algoritmos y Estructuras de Datos II',  year: '2° AÑO', prereq: [IDS.AED1] },
-
-      { id: IDS.ELECTIVA_NAT,   name: 'Electiva de Naturales',                 year: '3° AÑO', prereq: CBC_ALL },
-      { id: IDS.LAB_DATOS,      name: 'Laboratorio de Datos',                  year: '3° AÑO', prereq: [IDS.AED1] },
-      { id: IDS.ANALISIS2,      name: 'Análisis II',                           year: '3° AÑO', prereq: [IDS.ANALISIS1] },
-      { id: IDS.ALC,            name: 'Álgebra Lineal Computacional',          year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.AED2] },
-      { id: IDS.ANALISIS_ADV,   name: 'Análisis Avanzado',                     year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.ANALISIS2] },
-
-      { id: IDS.AED3,           name: 'Algoritmos y Estructuras de Datos III', year: '4° AÑO', prereq: [IDS.AED2] },
-      { id: IDS.PROB,           name: 'Probabilidad',                           year: '4° AÑO', prereq: [IDS.ANALISIS_ADV] },
-      { id: IDS.MODELO_CONT,    name: 'Introducción al Modelado Continuo',     year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV] },
-      { id: IDS.IOO,            name: 'Introducción a la Investigación Operativa y Optimización', year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV, IDS.AED3] },
-      { id: IDS.ESTAD_CD,       name: 'Introducción a la Estadística y Ciencia de Datos', year: '4° AÑO', prereq: [IDS.ALC, IDS.LAB_DATOS, IDS.PROB] },
+      { id: IDS.IPC, name: 'IPC', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ICSE, name: 'ICSE', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ANALISIS_CBC, name: 'Análisis Matemático', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ALGEBRA_CBC, name: 'Álgebra', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.QUIMICA, name: 'Química', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.PENSAMIENTO, name: 'Pensamiento Computacional', year: 'CBC (1° AÑO)', prereq: [] },
+      { id: IDS.ALGEBRA1, name: 'Álgebra I', year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.ANALISIS1, name: 'Análisis I', year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.AED1, name: 'Algoritmos y Estructuras de Datos I', year: '2° AÑO', prereq: CBC_ALL },
+      { id: IDS.AED2, name: 'Algoritmos y Estructuras de Datos II', year: '2° AÑO', prereq: [IDS.AED1] },
+      { id: IDS.ELECTIVA_NAT, name: 'Electiva de Naturales', year: '3° AÑO', prereq: CBC_ALL },
+      { id: IDS.LAB_DATOS, name: 'Laboratorio de Datos', year: '3° AÑO', prereq: [IDS.AED1] },
+      { id: IDS.ANALISIS2, name: 'Análisis II', year: '3° AÑO', prereq: [IDS.ANALISIS1] },
+      { id: IDS.ALC, name: 'Álgebra Lineal Computacional', year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.AED2] },
+      { id: IDS.ANALISIS_ADV, name: 'Análisis Avanzado', year: '3° AÑO', prereq: [IDS.ALGEBRA1, IDS.ANALISIS2] },
+      { id: IDS.AED3, name: 'Algoritmos y Estructuras de Datos III', year: '4° AÑO', prereq: [IDS.AED2] },
+      { id: IDS.PROB, name: 'Probabilidad', year: '4° AÑO', prereq: [IDS.ANALISIS_ADV] },
+      { id: IDS.MODELO_CONT, name: 'Introducción al Modelado Continuo', year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV] },
+      { id: IDS.IOO, name: 'Introducción a la Investigación Operativa y Optimización', year: '4° AÑO', prereq: [IDS.ALC, IDS.ANALISIS_ADV, IDS.AED3] },
+      { id: IDS.ESTAD_CD, name: 'Introducción a la Estadística y Ciencia de Datos', year: '4° AÑO', prereq: [IDS.ALC, IDS.LAB_DATOS, IDS.PROB] },
     ];
 
     const STORAGE_KEY = 'uba-ds-malla-v1';
-
     let completed = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
     const columnsEl = document.getElementById('columns');
     const years = ['CBC (1° AÑO)', '2° AÑO', '3° AÑO', '4° AÑO'];
@@ -200,11 +179,9 @@
     function countDoneInYear(year){
       return COURSES.filter(c=>c.year===year && completed.has(c.id)).length;
     }
-
     function prereqsMet(course){ return course.prereq.every(id => completed.has(id)); }
     function missingOf(course){ return course.prereq.filter(id => !completed.has(id)); }
     function courseById(id){ return COURSES.find(c=>c.id===id); }
-
     function statusFor(course){
       if(completed.has(course.id)) return 'done';
       return prereqsMet(course) ? 'available active' : 'locked';
@@ -254,5 +231,14 @@
         rerenderAll();
       });
 
-      el.addEventListener('mouseenter', ()=>{
+      return {element:el};
+    }
+
+    function rerenderAll(){ render(); }
+    function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed])); }
+
+    render();
+  </script>
+</body>
+</html>
 
